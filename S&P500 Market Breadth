@@ -1,0 +1,104 @@
+//@version=4
+//Idea From LEI & LoneCapital
+//Thanks to Ronnyjoy, Don-L, jasonmel, mli,papok, s6wu, xian, Yu yang, Jchang274, Yin Feng from Slack Group
+
+study(title="S&P500 Market Breadth", shorttitle="S&P500 Market Breadth",overlay=false)
+
+tp =9
+
+colorFill(v) => 
+    v >=95?color.new(color.green,tp*0):
+      v>=90?color.new(color.green,tp*1):
+      v>=85?color.new(color.green,tp*2):
+      v>=80?color.new(color.green,tp*3):
+      v>=75?color.new(color.green,tp*4):
+      v>=70?color.new(color.green,tp*5):
+      v>=65?color.new(color.green,tp*6):
+      v>=60?color.new(color.green,tp*7):
+      v>=55?color.new(color.green,tp*8):
+      v>=50?color.new(color.green,tp*9):
+      v>=45?color.new(color.red,tp*9):
+      v>=40?color.new(color.red,tp*8):
+      v>=35?color.new(color.red,tp*7):
+      v>=30?color.new(color.red,tp*6):
+      v>=25?color.new(color.red,tp*5):
+      v>=20?color.new(color.red,tp*4):
+      v>=15?color.new(color.red,tp*3):
+      v>=10?color.new(color.red,tp*2):
+      v>=5?color.new(color.red,tp*1):
+      color.new(color.red,tp*0)
+
+h0 = hline(0, title="Center", linestyle=hline.style_dashed, color=color.gray)
+h1 = hline(10, title="Center", linestyle=hline.style_dashed, color=color.gray)
+h2 = hline(20, title="Center", linestyle=hline.style_dashed, color=color.gray)
+h3 = hline(30, title="Center", linestyle=hline.style_dashed, color=color.gray)
+h4 = hline(40, title="Center", linestyle=hline.style_dashed, color=color.gray)
+h5 = hline(50, title="Center", linestyle=hline.style_dashed, color=color.gray)
+h6 = hline(60, title="Center", linestyle=hline.style_dashed, color=color.gray)
+h7 = hline(70, title="Center", linestyle=hline.style_dashed, color=color.gray)
+h8 = hline(80, title="Center", linestyle=hline.style_dashed, color=color.gray)
+h9 = hline(90, title="Center", linestyle=hline.style_dashed, color=color.gray)
+h10 = hline(100, title="Center", linestyle=hline.style_dashed, color=color.gray)
+h11 = hline(110, title="Center", linestyle=hline.style_dashed, color=color.gray)
+h12 = hline(120, title="Center", linestyle=hline.style_dashed, color=color.gray)
+
+COM = security("INDEX:SLTW", timeframe.period,close)
+CND = security("INDEX:SYTW", timeframe.period,close)
+CNS = security("INDEX:SPTW", timeframe.period,close)
+ENE = security("INDEX:SETW", timeframe.period,close)
+FIN = security("INDEX:SFTW", timeframe.period,close)
+HLT = security("INDEX:SVTW", timeframe.period,close)
+IND = security("INDEX:SITW", timeframe.period,close)
+MAT = security("INDEX:SBTW", timeframe.period,close)
+REI = security("INDEX:SSTW", timeframe.period,close)
+TEC = security("INDEX:SKTW", timeframe.period,close)
+UTL = security("INDEX:SUTW", timeframe.period,close)
+TTL=COM+CND+CNS+ENE+FIN+HLT+IND+MAT+REI+TEC+UTL
+TTLAV = TTL/11
+
+label.new(
+     x=bar_index,y=12*10-5,
+     text=tostring(TTL,"#")+"        ",
+     style=label.style_label_center,color=color.new(color.white,transp=100),
+     textcolor=color.gray,
+     textalign = text.align_left,
+     size=size.tiny)
+
+fill(h12,h11,colorFill(TTLAV))
+fill(h11,h10,colorFill(COM))
+fill(h10,h9,colorFill(CND))
+fill(h9,h8,colorFill(CNS))
+fill(h8,h7,colorFill(ENE))
+fill(h7,h6,colorFill(FIN))
+fill(h6,h5,colorFill(HLT))
+fill(h5,h4,colorFill(IND))
+fill(h4,h3,colorFill(MAT))
+fill(h3,h2,colorFill(REI))
+fill(h2,h1,colorFill(TEC))
+fill(h1,h0,colorFill(UTL))
+
+drawLabel(y, _text) =>
+    var label Label = na
+    label.delete(Label)
+    Label := label.new(
+      x=bar_index, 
+      y=y,
+      text=_text, 
+      color=color.new(color.white, 20), 
+      textalign=text.align_left, 
+      textcolor=color.black, 
+      style=label.style_none, 
+      size=size.normal)
+
+drawLabel(11*10, "                         Total Score "+tostring(TTL,"#"))
+drawLabel(10*10, "                         COM "+tostring(COM,"#"))
+drawLabel(9*10, "                         CND "+tostring(CND,"#"))
+drawLabel(8*10, "                         CNS "+tostring(CNS,"#"))
+drawLabel(7*10, "                         ENE "+tostring(ENE,"#"))
+drawLabel(6*10, "                         FIN "+tostring(FIN,"#"))
+drawLabel(5*10, "                         HLT "+tostring(HLT,"#"))
+drawLabel(4*10, "                         IND "+tostring(IND,"#"))
+drawLabel(3*10, "                         MAT "+tostring(MAT,"#"))
+drawLabel(2*10, "                         REI "+tostring(REI,"#"))
+drawLabel(1*10, "                         TEC "+tostring(TEC,"#"))
+drawLabel(0*10, "                         UTL "+tostring(UTL,"#"))
