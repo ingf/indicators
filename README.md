@@ -7,5 +7,5 @@
 - [x] MA + EMA
 - [x] S&P500 Market Breadth
 - [x] PriceDivergence
-[] Oil/Gold vs Copper/Gold vs US 10 Year Yield
+- [] Oil/Gold vs Copper/Gold vs US 10 Year Yield
 
