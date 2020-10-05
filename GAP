@@ -1,0 +1,61 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © https://github.com/ingf/indicators
+
+//@version=4 
+study(title="GAP", overlay = true, max_bars_back=2000)
+
+length = input(300, minval=1, maxval=2000)
+width = input(1, minval=1, maxval=5, options = [1,2,3,4,5])
+precision = input(1, minval=1, maxval=5, options = [1,2,3,4,5])
+
+gap_start = high[length]
+gap_end = low[length - 1]
+gap_bull = false
+gap_bear = false
+inf_gap = 0.0
+sup_gap = 0.0
+sup_index = 0
+
+if barstate.islast
+    for j = 1 to length
+        gap_bull := false
+        gap_bear := false
+        inf_gap := 0.0
+        sup_gap := 0.0
+        sup_index := j
+        if high[j] < low[j - 1]
+            gap_start := high[j]
+            gap_end := low[j - 1]
+            gap_bull := true
+            inf_gap := gap_start
+            sup_gap := gap_end
+            for i = (j-1) to 0
+                if sup_gap > low[i]
+                    sup_index := i
+                    sup_gap := low[i]
+
+            if ((sup_gap - inf_gap)/(syminfo.mintick*10) > precision)
+                line.new(x1 = bar_index[j], y1 = inf_gap, 
+                         x2 = bar_index, y2 = inf_gap,
+                         extend=extend.right, color = color.green, style = line.style_solid, width = width)
+                line.new(x1 = bar_index[j], y1 = sup_gap, 
+                         x2 = bar_index[min(sup_index, j - 1)], y2 = sup_gap,
+                         color = color.green, style = line.style_solid, width = width)
+
+        if low[j] > high[j - 1]
+            gap_start := low[j]
+            gap_end := high[j - 1]
+            gap_bear := true
+            inf_gap := gap_end
+            sup_gap := gap_start
+            for i = (j-1) to 0
+                if inf_gap < high[i]
+                    sup_index := i
+                    inf_gap := high[i]
+            if ((sup_gap - inf_gap)/(syminfo.mintick*10) > precision)
+                line.new(x1 = bar_index[j], y1 = inf_gap, 
+                         x2 = bar_index[min(sup_index, j - 1)], y2 = inf_gap,
+                         color = color.red, style = line.style_solid, width = width)
+                line.new(x1 = bar_index[j], y1 = sup_gap, 
+                         x2 = bar_index, y2 = sup_gap,
+                         extend=extend.right, color = color.red, style = line.style_solid, width = width)
